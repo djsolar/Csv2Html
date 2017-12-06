@@ -1,22 +1,23 @@
 import csv
+import os
 
 
 def write_csv():
-    with open('names.csv', 'w') as csvfile:
-        fieldnames = ['first_name', 'last_name']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
-        writer.writerow({})
-        writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
-        writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
+	with open('names.csv', 'w') as csvfile:
+		fieldnames = ['first_name', 'last_name']
+		writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+		writer.writeheader()
+		writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
+		writer.writerow({})
+		writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
+		writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
 
 
-def read_csv():
-    with open('names.csv') as csvfile:
-        reader = csv.reader(csvfile)
-        is_header = True
-        html = """<!DOCTYPE html>
+def read_csv(path):
+	with open(path) as csvfile:
+		reader = csv.reader(csvfile)
+		is_header = True
+		html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -66,31 +67,35 @@ def read_csv():
 </head>
 <body>
 <div id="wrapper">"""
-        for row in reader:
-            if len(row) == 0:
-                is_header = True
-                html += "</table>"
-            else:
-                if is_header:
-                    is_header = False
-                    html += "<table border='1'> <thead><tr>"
-                    for header in row:
-                        html += "<th>" + header + "</th>"
-                    html += "</tr></thead>"
-                else:
-                    html += "<tbody><tr>"
-                    for row_content in row:
-                        html += "<td>" + row_content + "</td>"
-                    html += "</tr></tbody>"
-        html += "</table> </div> </body> </html>"
-        return html
+		for row in reader:
+			if len(row) == 0:
+				is_header = True
+				html += "</table>"
+			else:
+				if is_header:
+					is_header = False
+					html += "<table border='1'> <thead><tr>"
+					for header in row:
+						html += "<th>" + header + "</th>"
+					html += "</tr></thead>"
+				else:
+					html += "<tbody><tr>"
+					for row_content in row:
+						html += "<td>" + row_content + "</td>"
+					html += "</tr></tbody>"
+		html += "</table> </div> </body> </html>"
+		return html
 
 
-def write_html_file(html):
-    with open("index.html", "w") as htmlFile:
-        htmlFile.write(html)
+def write_html_file(html, path):
+	with open(path, "w") as htmlFile:
+		htmlFile.write(html)
 
 
-if __name__ == '__main__':
-    html = read_csv()
-    write_html_file(html)
+def transfer_csv_html(path):
+	html = read_csv(path)
+	dir_name, filename = os.path.split(path)
+	html_path = dir_name + os.sep + os.path.splitext(filename)[0] + ".html"
+	write_html_file(html, html_path)
+	return html_path
+
