@@ -16,7 +16,6 @@ def write_csv():
 def read_csv(path):
 	with open(path) as csvfile:
 		reader = csv.reader(csvfile)
-		is_header = True
 		html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,12 +46,12 @@ def read_csv(path):
             color: #FFF;
         }
 
-        table tr:nth-child(odd) {
-            background: #F4F4F4;
+        table tbody tr:nth-child(odd) {
+            background: #C4C4C4;
         }
 
-        table td:nth-child(even) {
-            color: #C00;
+        table tbody tr:nth-child(even) {
+            background: #707070;
         }
 
         table tr:hover {
@@ -67,23 +66,29 @@ def read_csv(path):
 </head>
 <body>
 <div id="wrapper">"""
+		is_header = True
+		is_tbody = False
 		for row in reader:
 			if len(row) == 0:
 				is_header = True
 				html += "</table>"
 			else:
 				if is_header:
+					if is_tbody:
+						html += "</tbody>"
+						is_tbody = False
 					is_header = False
 					html += "<table border='1'> <thead><tr>"
 					for header in row:
 						html += "<th>" + header + "</th>"
-					html += "</tr></thead>"
+					html += "</tr></thead><tbody>"
+					is_tbody = True
 				else:
-					html += "<tbody><tr>"
+					html += "<tr>"
 					for row_content in row:
 						html += "<td>" + row_content + "</td>"
-					html += "</tr></tbody>"
-		html += "</table> </div> </body> </html>"
+					html += "</tr>"
+		html += "</tbody></table> </div> </body> </html>"
 		return html
 
 
